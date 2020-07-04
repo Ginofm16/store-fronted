@@ -1,0 +1,70 @@
+<mat-toolbar>Registro de Consulta</mat-toolbar>
+
+<div class="example-container">
+    <mat-form-field>
+        <mat-select placeholder="Selecciona Persona" [(value)]="idPersonaSeleccianda">
+            <!--async, permite que subcribamos a esa variable Observable aca en el html-->
+            <mat-option *ngFor="let p of (personas$ | async)" [value]="p.idPersona">
+                {{ p.nombres }} {{ p.apellidos }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Escoge una fecha" [max]="maxFecha"
+            [(ngModel)]="fechaSeleccionada">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-select placeholder="Selecciona Producto" [(value)]="idProductoSeleccionado">
+            <!--async, permite que subcribamos a esa variable Observable aca en el html-->
+            <mat-option *ngFor="let p of (productos$ | async)" [value]="p.idProducto">
+                {{p.nombre}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="ripple-radius">
+        <input matInput [(ngModel)]="cantidad" type="number" placeholder="Cantidad">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="agregar()">Agregar Detalle</button>
+
+    <mat-table [dataSource]="dataSource" matSort >
+        <ng-container matColumnDef="producto">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Producto </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.producto.nombre}} </mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="precio">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Precio </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.producto.precio}}</mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="cantidad">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Cantidad </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.cantidad}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Total </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ row.cantidad * row.producto.precio }} </mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="eliminar">
+            <mat-header-cell *matHeaderCellDef>Eliminar</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button mat-button color="accent" (click)="eliminar(row.producto.idProducto)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+    
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <button mat-raised-button color="primary" (click)="aceptar()">Registrar</button>
+</div>
